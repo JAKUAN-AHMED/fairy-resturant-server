@@ -29,6 +29,7 @@ async function run() {
     await client.connect();
     const menuCollection=client.db('Fairy').collection('menu');
     const reviewsCollection=client.db('Fairy').collection('reviews');
+    const cartsCollection=client.db('Fairy').collection('carts')
     app.get("/", (req, res) => {
       res.send("hello world!");
     });
@@ -39,10 +40,23 @@ async function run() {
     })
     //get all reviews data
     app.get('/reviews',async(req,res)=>{
-        const result=await menuCollection.find().toArray();
+        const result=await reviewsCollection.find().toArray();
         res.send(result)
     })
+    // carts
+    app.post('/carts',async(req,res)=>{
+      const cart=req.body;
+      const result=await cartsCollection.insertOne(cart);
+      res.send(result)
+    })
 
+    //get carts
+    app.get('/carts',async(req,res)=>{
+      const email=req.query.email;
+      const query={email:email};
+      const result=await cartsCollection.find(query).toArray();
+      res.send(result);
+    })
 
 
 
